@@ -15,9 +15,9 @@ export default class LetterGame extends Component {
     words.forEach(word => {
       _this.dictionary[word] = word;
     });
-    this.myWordHash = { word: [], board: {}, wordSuccess: false };
+    this.myWordStore = { word: [], board: {}, wordSuccess: false };
     board.forEach((letter, index) => {
-      this.myWordHash.board[letter + index] = { pressed: false };
+      this.myWordStore.board[letter + index] = { pressed: false };
     });
     this.myWord = "";
   }
@@ -40,17 +40,17 @@ export default class LetterGame extends Component {
   wordEvaluation = () => {
     if (this.dictionary.hasOwnProperty(this.myWord.toLowerCase())){
       this.textBox.setValidClass("valid");
-      this.myWordHash.wordSuccess = true;
-      for (const key in this.myWordHash.board) {
-        if (this.myWordHash.board[key].pressed){
+      this.myWordStore.wordSuccess = true;
+      for (const key in this.myWordStore.board) {
+        if (this.myWordStore.board[key].pressed){
           this.refs[key].setColor("letter-success");
         }
       }
-    } else if (this.myWordHash.wordSuccess) {
-      this.myWordHash.wordSuccess = false;
+    } else if (this.myWordStore.wordSuccess) {
+      this.myWordStore.wordSuccess = false;
       this.textBox.setValidClass("");
-      for (const key in this.myWordHash.board) {
-        if (this.myWordHash.board[key].pressed){
+      for (const key in this.myWordStore.board) {
+        if (this.myWordStore.board[key].pressed){
           this.refs[key].setColor("letter-error");
         }
       }
@@ -58,32 +58,35 @@ export default class LetterGame extends Component {
   }
 
   writeWord = (letter, index) => {
-    if (this.myWordHash.board[`${letter}${index}`].pressed) {
-      this.myWordHash.board[letter + index].pressed = false;
+    if (this.myWordStore.board[`${letter}${index}`].pressed) {
+      this.myWordStore.board[letter + index].pressed = false;
       this.refs[letter + index].setColor("");
-      this.myWordHash.word.splice(this.myWordHash.word.findIndex(obj => { return obj.index === index }), 1);
-      this.buildWord(this.myWordHash.word);
+      this.myWordStore.word.splice(this.myWordStore.word.findIndex(obj => { return obj.index === index }), 1);
+      this.buildWord(this.myWordStore.word);
       this.wordEvaluation();
+      if (this.myWordStore.word.length === 0) {
+        this.clearWord();
+      }
       return;
-    } else if (this.myWordHash.word.length === 6) {
+    } else if (this.myWordStore.word.length === 6) {
       return;
     }
-    this.myWordHash.word.push({ letter: letter, index: index });
-    this.buildWord(this.myWordHash.word);
+    this.myWordStore.word.push({ letter: letter, index: index });
+    this.buildWord(this.myWordStore.word);
     this.clearButton.setVisible(true);
-    this.myWordHash.board[`${letter}${index}`]["pressed"] = true;
+    this.myWordStore.board[`${letter}${index}`]["pressed"] = true;
     this.refs[`${letter}${index}`].setColor('letter-error');
     this.wordEvaluation();
   }
 
   clearWord = () => {
-    this.myWordHash.word = [];
+    this.myWordStore.word = [];
     this.textBox.setWord("");
     this.clearButton.setVisible(false);
     this.textBox.setValidClass("invalid");
-    for (const key in this.myWordHash.board) {
-      if (this.myWordHash.board[key]) {
-        this.myWordHash.board[key].pressed = false;
+    for (const key in this.myWordStore.board) {
+      if (this.myWordStore.board[key]) {
+        this.myWordStore.board[key].pressed = false;
         this.refs[key].setColor("");
       }
     }

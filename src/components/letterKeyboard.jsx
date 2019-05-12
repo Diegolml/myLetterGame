@@ -4,24 +4,15 @@ export default class LetterKeyboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            colorClass: "",
-            pressed: false
+            colorClass: ""
         };
         this.letter = props.letter;
         this.className = props.className;
         this.onClick = props.onClick;
-      }
-
-    setPressed = (bool) => {
-        this.setState({ pressed: bool });
     }
 
     setColor = (color) => {
-        this.setState({colorClass: color})
-    }
-
-    isPressed = () => {
-        return this.state.pressed;
+        this.setState({ colorClass: color })
     }
 
     render() {

@@ -11,7 +11,6 @@ export default class TextBox extends Component {
     }
 
     setWord = (word) => {
-        
         this.setState({ word: word });
     };
 
